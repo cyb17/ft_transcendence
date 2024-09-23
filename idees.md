@@ -1,3 +1,4 @@
+? -> pas sur de l'integrer dans le projet
 
 I- Les principaux pages web :
 
@@ -53,7 +54,7 @@ I- Les principaux pages web :
 			-Statistiques de jeu : nombre de victoires, défaites.
 			-History : contre qui (cliquable pour voir son profil), quand, victoire ou defaite. 
 
-II- Les APIs necessaires sur les objets :
+II- Les APIs necessaires :
 
 	* Authentification et gestion des utilisateurs :
 
