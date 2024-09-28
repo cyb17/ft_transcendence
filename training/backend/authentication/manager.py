@@ -11,5 +11,7 @@ class UserManager(BaseUserManager):
 		if not password:
 			raise TypeError(_('No password provided'))
 		user = self.model(username=username, email=self.normalize_email(email))
-
-	def created_superuser():
+		user.set_password(password)
+		user.clean_fields()
+		user.save()
+		return user

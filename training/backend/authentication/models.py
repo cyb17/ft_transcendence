@@ -17,25 +17,25 @@ class User(AbstractUser):
 	is_active = models.BooleanField(default=True)
 	is_staff = models.BooleanField(default=False)
 	created_at = models.DateTimeField(default=timezone.now)
-	friends = models.ManyToManyField('self', symmetrical=False, blank=True, related_name='friend_set')
+	friends = models.ManyToManyField('self', related_name='friend_set', symmetrical=False, blank=True)
 
 	objects = UserManager()
 
-	USERNAME_FIELD = 'username'
-	REQUIRED_FIELDS = ['email', 'nickname']
+# 	USERNAME_FIELD = 'username'
+# 	REQUIRED_FIELDS = ['email', 'nickname']
 
-	def has_perm(self, perm, obj=None):
-		return True
+	# def has_perm(self, perm, obj=None):
+	# 	return True
 
-	def has_module_perms(self, perm, obj=None):
-		return True
+	# def has_module_perms(self, perm, obj=None):
+	# 	return True
 
-	@property
-	def is_admin(self):
-		return self.is_staff
+	# @property
+	# def is_admin(self):
+	# 	return self.is_staff
 
-	def __str__(self):
-		return self.username
+	# def __str__(self):
+	# 	return self.username
 
-	def get_full_name(self):
-		return self.nickname
+	# def get_full_name(self):
+	# 	return self.nickname
