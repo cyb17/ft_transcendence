@@ -1,28 +1,23 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import MinLengthValidator
-from .validators import validate_alnum
-from .manager import UserManager
+from .manager import CustomUserManager
 
-class User(AbstractUser):
-	username = models.CharField(
-		max_length=15,
-		unique=True,
-		validators=[MinLengthValidator(3), validate_alnum]
-		)
+class CustomUser(AbstractUser):
+
 	nickname = models.CharField(max_length=30)
-	email = models.EmailField(unique=True)
+	email = models.EmailField(unique=True, blank=False, null=False)
 	avatar = models.URLField(blank=True, null=True)
-	is_active = models.BooleanField(default=True)
-	is_staff = models.BooleanField(default=False)
-	created_at = models.DateTimeField(default=timezone.now)
 	friends = models.ManyToManyField('self', related_name='friend_set', symmetrical=False, blank=True)
 
-	objects = UserManager()
+	USERNAME_FIELD = 'username'
+	REQUIRED_FIELDS = ['email', 'nickname']
 
-# 	USERNAME_FIELD = 'username'
-# 	REQUIRED_FIELDS = ['email', 'nickname']
+	def __str__(self):
+		return self.username
+
+	def get_full_name(self):
+		return self.nickname
 
 	# def has_perm(self, perm, obj=None):
 	# 	return True
@@ -34,8 +29,3 @@ class User(AbstractUser):
 	# def is_admin(self):
 	# 	return self.is_staff
 
-	# def __str__(self):
-	# 	return self.username
-
-	# def get_full_name(self):
-	# 	return self.nickname

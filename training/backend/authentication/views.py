@@ -1,6 +1,6 @@
 from django.shortcuts import render
-
 from django.http import HttpResponse
 
-def home:
-	return HttpResponse("you are in home")
+
+def example(request):
+	return HttpResponse("client registed successfully")
