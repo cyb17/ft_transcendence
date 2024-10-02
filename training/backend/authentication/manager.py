@@ -1,1 +1,1 @@
-
+from django.contrib.auth import AbstractUserManager

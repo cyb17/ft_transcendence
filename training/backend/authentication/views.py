@@ -1,16 +1,17 @@
 from .models import CustomUser
 from .serializers import CustomUserSerializer, UserLoginSerializer
-from rest_framework import generics,status
+from django.contrib.auth import authenticate
+from rest_framework import generics, status
 from rest_framework.response import Response
-from django.contrib.auth import authenticate, login
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .permissions import IsOwner
-from rest_framework.permissions import IsAuthenticated, AllowAny
+
 
 class ListUsers(generics.ListAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
+    # permission_classes = [IsAdminUser]
 
 class CreateUser(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
@@ -18,10 +19,12 @@ class CreateUser(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 class UserOperations(generics.RetrieveUpdateDestroyAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
-    authentication_classes = (JWTAuthentication, )
-    permission_classes = [IsAuthenticated, IsOwner]
+	queryset = CustomUser.objects.all()
+	serializer_class = CustomUserSerializer
+	permission_classes = [IsAuthenticated]
+
+	def get_object(self):
+		return self.request.user
     
 class UserLogin(generics.GenericAPIView):
     permission_classes = [AllowAny]
