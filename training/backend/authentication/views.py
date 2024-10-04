@@ -1,6 +1,7 @@
 from .models import CustomUser
 from .serializers import CustomUserSerializer, UserLoginSerializer
 from django.contrib.auth import authenticate
+from django.contrib.auth import logout
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
@@ -16,18 +17,15 @@ class ListUsers(generics.ListAPIView):
 class CreateUser(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
-    permission_classes = [AllowAny]
+    # permission_classes = [AllowAny]
 
 class UserOperations(generics.RetrieveUpdateDestroyAPIView):
 	queryset = CustomUser.objects.all()
 	serializer_class = CustomUserSerializer
-	permission_classes = [IsAuthenticated]
-
-	def get_object(self):
-		return self.request.user
+	# permission_classes = [IsAuthenticated]
     
 class UserLogin(generics.GenericAPIView):
-    permission_classes = [AllowAny]
+    # permission_classes = [AllowAny]
     serializer_class = UserLoginSerializer
 
     def post(self, request):
@@ -47,3 +45,7 @@ class UserLogin(generics.GenericAPIView):
                 return Response({'Forbidden': 'User is not active'}, status=status.HTTP_403_FORBIDDEN) 
         else:
             return Response({"error": "Login failed. Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
+
+def user_logout(request):
+    logout(request)
+    return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)

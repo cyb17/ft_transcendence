@@ -8,5 +8,8 @@ class CustomUser(AbstractUser):
 	avatar = models.URLField(blank=True, null=True, default='default_avatar_url')
 	friends = models.ManyToManyField('self', related_name='friend_set', symmetrical=False, blank=True)
 
+	USERNAME_FIELD = 'username'
+	REQUIRED_FIELDS = ['username', 'email']
+
 	def __str__(self):
 		return self.username
