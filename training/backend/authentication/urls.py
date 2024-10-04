@@ -9,5 +9,4 @@ urlpatterns = [
 	path('login/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('login/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 	path('logout/', views.user_logout, name='logout'),
-	# path('login/', views.UserLogin.as_view(), name='login'),
 ]

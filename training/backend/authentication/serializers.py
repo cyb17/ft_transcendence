@@ -26,7 +26,3 @@ class CustomUserSerializer(serializers.ModelSerializer):
 		user.set_password(user.password)
 		user.save()
 		return user
-
-# class UserLoginSerializer(serializers.Serializer):
-#     username = serializers.CharField(required=True)
-#     password = serializers.CharField(required=True)
