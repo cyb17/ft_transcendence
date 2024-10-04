@@ -40,7 +40,9 @@ class UserLogin(generics.GenericAPIView):
             if user.is_active:
                 # Génération du token JWT
                 token_serializer = TokenObtainPairSerializer.get_token(user)
-                return Response({'access': str(token_serializer)}, status=status.HTTP_200_OK)
+                access_token = str(token_serializer.access_token)
+                refresh_token = str(token_serializer)
+                return Response({'access': access_token, 'refresh': refresh_token}, status=status.HTTP_200_OK)
             else:
                 return Response({'Forbidden': 'User is not active'}, status=status.HTTP_403_FORBIDDEN) 
         else:
