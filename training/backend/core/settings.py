@@ -135,10 +135,10 @@ REST_FRAMEWORK = {
     ),
 }
 
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-#     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
-#     'SLIDING_TOKEN_LIFETIME': timedelta(days=30),
-#     'SLIDING_TOKEN_REFRESH_LIFETIME_LATE_USER': timedelta(days=1),
-#     'SLIDING_TOKEN_LIFETIME_LATE_USER': timedelta(days=30),
-# }
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Serveur SMTP de Gmail
+EMAIL_PORT = 587  # Port pour les connexions sécurisées avec TLS
+EMAIL_USE_TLS = True  # Utilisation du protocole TLS
+# EMAIL_HOST_USER = 'yabingc7@gmail.com'  # Ton adresse email Gmail
+# EMAIL_HOST_PASSWORD = ''  # Ton mot de passe Gmail ou un mot de passe d'application
+# DEFAULT_FROM_EMAIL = 'yabingc7@gmail.com'
