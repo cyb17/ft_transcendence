@@ -7,6 +7,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError as DjangoValidationError
 
 class ListUsers(generics.ListAPIView):
     queryset = CustomUser.objects.all()
@@ -15,9 +17,17 @@ class ListUsers(generics.ListAPIView):
     permission_classes = [IsAdminUser]
 
 class CreateUser(generics.CreateAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
-    # permission_classes = [AllowAny]
+	queryset = CustomUser.objects.all()
+	serializer_class = CustomUserSerializer
+	permission_classes = [AllowAny]
+    
+	def perform_create(self, serializer):
+		email = serializer.validated_data.get('email')
+		try:
+			validate_email(email)
+		except DjangoValidationError:
+			raise ValidationError("L'adresse email fournie n'est pas valide.")
+		serializer.save()
 
 class UserOperations(generics.RetrieveUpdateDestroyAPIView):
 	queryset = CustomUser.objects.all()
