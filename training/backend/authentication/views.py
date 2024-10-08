@@ -1,12 +1,12 @@
 from .models import CustomUser
 from .permissions import IsOwner
-from rest_framework import viewsets
 from django.contrib.auth import logout
 from rest_framework.views import APIView
-from rest_framework import generics, status
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 from .serializers import CustomUserSerializer
 from rest_framework.decorators import api_view
+from django.utils.crypto import get_random_string
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -31,7 +31,7 @@ class UserViewSet(viewsets.ModelViewSet):
 		else:
 			permission_classes = [IsAdminUser]
 		return [permission() for permission in permission_classes]
-	
+
 class CookieTokenRefreshSerializer(TokenRefreshSerializer):
     refresh = None
 
@@ -46,6 +46,7 @@ class CookieTokenRefreshSerializer(TokenRefreshSerializer):
 class CookieTokenObtainPairView(TokenObtainPairView):
     def finalize_response(self, request, response, *args, **kwargs):
         if response.data.get('refresh'):
+            # cookie_max_age = 10 # 60s
             cookie_max_age = 3600 * 24 * 14 # 14 days
             response.set_cookie('refresh_token', response.data['refresh'], max_age=cookie_max_age, httponly=True)
             del response.data['refresh']
@@ -53,13 +54,15 @@ class CookieTokenObtainPairView(TokenObtainPairView):
 
 
 class CookieTokenRefreshView(TokenRefreshView):
-    def finalize_response(self, request, response, *args, **kwargs):
-        if response.data.get('refresh'):
-            cookie_max_age = 3600 * 24 * 14  # 14 days
-            response.set_cookie('refresh_token', response.data['refresh'], max_age=cookie_max_age, httponly=True)
-            del response.data['refresh']
-        return super().finalize_response(request, response, *args, **kwargs)
-    serializer_class = CookieTokenRefreshSerializer
+	serializer_class = CookieTokenRefreshSerializer
+            
+	def finalize_response(self, request, response, *args, **kwargs):
+		if response.data.get('refresh'):
+			# cookie_max_age = 10 # 60s
+			cookie_max_age = 3600 * 24 * 14  # 14 days
+			response.set_cookie('refresh_token', response.data['refresh'], max_age=cookie_max_age, httponly=True)
+			del response.data['refresh']
+		return super().finalize_response(request, response, *args, **kwargs)
 
 
 class LogoutView(APIView):
@@ -75,6 +78,35 @@ class LogoutView(APIView):
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
+
+@api_view(['POST'])
+def send_mymail(request):
+	from_mail = "ponggame@mail.com"
+	user_email = request.data.get('email')
+	# verification_token = get_random_string(length=32)
+	verication_token = "true email"
+
+	try:
+		verification_link = f"http://localhost:8000/api/verify-email/?token={verification_token}"
+		send_mail(
+			'Pong game email checking',
+			f'Click the link to activate your account : {verification_link}',
+			from_mail,
+			[user_email],
+			fail_silently=False,
+        )
+		return Response({"message": "Send verification mail successfully !"}, status=status.HTTP_200_OK)
+	except Exception as e:
+		return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+def mail_verified(request):
+	token = request.data.get('token')
+	if token and token == "true email"
+
+
+
+
 
 	# def create_activation_link(self, user):
 	# 	token = "token_de_verification"
@@ -92,22 +124,3 @@ class LogoutView(APIView):
 	# def perform_create(self, serializer):
 	# 	activation_link = create_
 	# 	serializer.save()
-
-@api_view(['POST'])
-def user_logout(request):
-    logout(request)
-    return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
-
-@api_view(['GET'])  # Utilise un décorateur pour définir la méthode HTTP
-def send_mymail(request):
-    try:
-        # Envoi de l'email
-        send_mail(
-            subject="sujet",
-            message="message",
-            from_email="yabingc@gmail.com",  # Remplace par ton adresse email d'expéditeur
-            recipient_list=["yabingc9@gmail.com"]  # Liste des destinataires
-        )
-        return Response({"message": "Email envoyé avec succès!"}, status=200)
-    except Exception as e:
-        return Response({'error': str(e)}, status=500)
