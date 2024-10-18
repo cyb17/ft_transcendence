@@ -17,7 +17,6 @@ from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
 from django.urls import reverse
 from django.core.mail import send_mail
 
-
 class UserViewSet(viewsets.ModelViewSet):
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
@@ -26,7 +25,7 @@ class UserViewSet(viewsets.ModelViewSet):
 	def get_permissions(self):
 		if self.action == 'create':
 			permission_classes = [AllowAny]
-		elif self.action in ['update', 'destroy', 'retrieve']:
+		elif self.action in ['update', 'destroy', 'partial_update', 'retrieve']:
 			permission_classes = [IsAuthenticated, IsOwner | IsAdminUser]
 		else:
 			permission_classes = [IsAdminUser]
@@ -80,14 +79,14 @@ class LogoutView(APIView):
         
 
 @api_view(['POST'])
-def send_mymail(request):
+def send_verification_email(request):
 	from_mail = "ponggame@mail.com"
 	user_email = request.data.get('email')
 	# verification_token = get_random_string(length=32)
-	verication_token = "true email"
+	verification_token = "true_email"
 
 	try:
-		verification_link = f"http://localhost:8000/api/verify-email/?token={verification_token}"
+		verification_link = f"http://localhost:8000/auth/email-verified/?token={verification_token}"
 		send_mail(
 			'Pong game email checking',
 			f'Click the link to activate your account : {verification_link}',
@@ -99,11 +98,13 @@ def send_mymail(request):
 	except Exception as e:
 		return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-# @api_view(['GET'])
-# def mail_verified(request):
-# 	token = request.data.get('token')
-# 	if token and token == "true email"
-
+@api_view(['GET'])
+def email_verified(request):
+	token = request.data.get('token')
+	print(token)
+	if token and token == "true_email":
+		return Response({"message": "Email has been verified, user account is now activated"}, status=status.HTTP_200_OK)
+	return Response({"message": "Email verification failed."}, status=status.HTTP_300_MULTIPLE_CHOICES)
 
 
 

@@ -135,8 +135,8 @@ REST_FRAMEWORK = {
     ),
 }
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'  # Serveur SMTP de Gmail
-# EMAIL_PORT = 587  # Port pour les connexions sécurisées avec TLS
-# EMAIL_USE_TLS = True  # Utilisation du protocole TLS
-# DEFAULT_FROM_EMAIL = 'ponggame@mail.com'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Serveur SMTP de Gmail
+EMAIL_PORT = 587  # Port pour les connexions sécurisées avec TLS
+EMAIL_USE_TLS = True  # Utilisation du protocole TLS
+DEFAULT_FROM_EMAIL = 'ponggame@mail.com'
