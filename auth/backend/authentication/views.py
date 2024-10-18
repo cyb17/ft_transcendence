@@ -99,10 +99,10 @@ def send_mymail(request):
 	except Exception as e:
 		return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@api_view(['GET'])
-def mail_verified(request):
-	token = request.data.get('token')
-	if token and token == "true email"
+# @api_view(['GET'])
+# def mail_verified(request):
+# 	token = request.data.get('token')
+# 	if token and token == "true email"
 
 
 
